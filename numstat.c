@@ -217,13 +217,26 @@ void calculate_stats(double *values, size_t count, Stats *stats) {
     stats->variance /= count;
     stats->stddev = sqrt(stats->variance);
 
-    // Sort values for percentile calculations
-    qsort(values, count, sizeof(double), compare_double);
+    // Create a copy for sorting to preserve original order
+    double *sorted_values = malloc(count * sizeof(double));
+    if (!sorted_values) {
+        // Fallback: use original array if allocation fails
+        qsort(values, count, sizeof(double), compare_double);
+        sorted_values = values;
+    } else {
+        memcpy(sorted_values, values, count * sizeof(double));
+        qsort(sorted_values, count, sizeof(double), compare_double);
+    }
 
     // Calculate median and quartiles
-    stats->median = get_percentile(values, count, 0.50);
-    stats->q1 = get_percentile(values, count, 0.25);
-    stats->q3 = get_percentile(values, count, 0.75);
+    stats->median = get_percentile(sorted_values, count, 0.50);
+    stats->q1 = get_percentile(sorted_values, count, 0.25);
+    stats->q3 = get_percentile(sorted_values, count, 0.75);
+
+    // Free sorted copy if we allocated it
+    if (sorted_values != values) {
+        free(sorted_values);
+    }
 }
 
 void print_stats_text(Stats *stats, int precision) {
