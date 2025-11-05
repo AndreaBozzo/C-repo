@@ -1,5 +1,6 @@
 # Compiled binaries
 numstat
+memmap
 *.exe
 *.out
 a.out

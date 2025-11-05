@@ -1,11 +1,24 @@
-# numstat
+# C Learning Repository (numstat)
 
-Calculate statistics for numerical data from the command line, making it available system-wide and as a single file.
+A collection of C programming exercises and utilities. Started as a statistics calculator, now includes various learning projects.
 
-My first attempt on C.
+**Note**: This repository will be renamed in the future to better reflect its purpose as a compilation of C exercises rather than a single project.
+
+My first attempts at C programming.
+
+## Projects
+
+### 1. numstat - Statistical Analysis Tool
+
+A command-line tool for calculating comprehensive statistics on numerical data.
+
+### 2. memmap - Memory Layout Demonstration
+
+An educational program demonstrating how C organizes memory into different segments (.text, .data, .bss, heap, stack).
 
 ## Build
 
+### numstat
 ```bash
 # Using Makefile (recommended)
 make
@@ -14,7 +27,15 @@ make
 gcc -o numstat numstat.c -lm
 ```
 
-## Usage
+### memmap
+```bash
+gcc -o memmap memmap.c
+./memmap
+```
+
+---
+
+## numstat Usage
 
 ```bash
 numstat [OPTIONS] [FILE]
@@ -26,9 +47,9 @@ numstat [OPTIONS] [FILE]
 - `-p N, --precision N` - Set decimal precision (default: 4)
 - `-h, --help` - Show help message
 
-## Examples
+### Examples
 
-### Read from file
+#### Read from file
 
 ```bash
 $ numstat data.txt
@@ -44,7 +65,7 @@ Statistics for 5 numbers:
   StdDev:  1.2921
 ```
 
-### Read from stdin
+#### Read from stdin
 
 ```bash
 $ echo "1 2 3 4 5" | numstat
@@ -60,7 +81,7 @@ Statistics for 5 numbers:
   StdDev:  1.4142
 ```
 
-### JSON output
+#### JSON output
 
 ```bash
 $ echo "1 2 3 4 5" | numstat -j
@@ -78,7 +99,7 @@ $ echo "1 2 3 4 5" | numstat -j
 }
 ```
 
-### Custom precision
+#### Custom precision
 
 ```bash
 $ numstat -p 2 data.txt
@@ -94,7 +115,7 @@ Statistics for 5 numbers:
   StdDev:  1.29
 ```
 
-### Pipeline usage
+#### Pipeline usage
 
 ```bash
 # Analyze log file numbers
@@ -107,7 +128,7 @@ seq 1 100 | numstat
 cat measurements.csv | cut -d',' -f2 | numstat -p 3
 ```
 
-## Statistics Calculated
+### Statistics Calculated
 
 - **Count** - Total number of values
 - **Sum** - Sum of all values
@@ -120,7 +141,7 @@ cat measurements.csv | cut -d',' -f2 | numstat -p 3
 - **Q3** - Third quartile (75th percentile)
 - **StdDev** - Population standard deviation
 
-## Installation
+### Installation
 
 ```bash
 # Install to /usr/local/bin
@@ -129,6 +150,55 @@ sudo make install
 # Uninstall
 sudo make uninstall
 ```
+
+---
+
+## memmap Usage
+
+The `memmap` program is an educational tool that demonstrates how C programs organize memory.
+
+### What it shows
+
+When you run `memmap`, it displays:
+
+1. **System page size** - The memory page size used by your operating system
+2. **Memory layout** - Addresses of different types of variables:
+   - `.text` segment (executable code)
+   - `.data` segment (initialized global variables)
+   - `.bss` segment (uninitialized global variables)
+   - Heap (dynamically allocated memory)
+   - Stack (local variables)
+3. **Stack growth** - How the stack grows through recursive function calls
+
+### Example output
+
+```bash
+$ ./memmap
+System page size: 4096 bytes
+
+===Memory map of Variables===
+Function (text segment): 0x5d517d42b209
+Global initialized: 0x5d517d42e010
+Global uninitialized: 0x5d517d42e02c
+Local variable: 0x7ffd2b1ed77c
+Heap variable: 0x5d51b12d22b0
+===End of Memory map===
+
+===Stack growth demonstration===
+Depth 1 - stack address: 0x7ffd2b1ed784
+Depth 2 - stack address: 0x7ffd2b1ed754
+Depth 3 - stack address: 0x7ffd2b1ed724
+...
+```
+
+### Key observations
+
+- Stack addresses **decrease** as depth increases (stack grows downward)
+- Global variables (.data and .bss) are stored close together
+- Heap memory is allocated in a separate region
+- Code (.text) is isolated from data segments
+
+---
 
 ## License
 
