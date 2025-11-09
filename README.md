@@ -14,21 +14,50 @@ A command-line tool for calculating comprehensive statistics on numerical data.
 
 An educational program demonstrating how C organizes memory into different segments (.text, .data, .bss, heap, stack).
 
+### 3. mem_errors - Common Memory Errors
+
+An educational program that demonstrates dangerous memory errors in C programming. Shows both unsafe patterns and their safe alternatives for learning purposes.
+
 ## Build
 
-### numstat
+All programs can be built using the Makefile:
+
 ```bash
-# Using Makefile (recommended)
+# Build all programs (release version)
 make
 
-# Or manually
-gcc -o numstat numstat.c -lm
+# Build with debug symbols
+make debug
+
+# Build with sanitizers (AddressSanitizer + UndefinedBehaviorSanitizer)
+make sanitize
+
+# List all discovered programs
+make list
+
+# Clean build artifacts
+make clean
 ```
 
-### memmap
+### Manual build commands
+
+#### numstat
 ```bash
-gcc -o memmap memmap.c
-./memmap
+gcc -Wall -Wextra -std=c99 -O2 -o numstat numstat.c -lm
+```
+
+#### memmap
+```bash
+gcc -Wall -Wextra -std=c99 -O2 -o memmap memmap.c
+```
+
+#### mem_errors
+```bash
+# Normal build
+gcc -Wall -Wextra -std=c99 -o mem_errors mem_errors.c
+
+# Debug build with sanitizers (recommended for learning)
+gcc -g -fsanitize=address -o mem_errors mem_errors.c
 ```
 
 ---
@@ -195,6 +224,100 @@ Depth 3 - stack address: 0x7ffd2b1ed724
 - Global variables (.data and .bss) are stored close together
 - Heap memory is allocated in a separate region
 - Code (.text) is isolated from data segments
+
+---
+
+## mem_errors Usage
+
+The `mem_errors` program is an educational tool that demonstrates common memory management mistakes in C and their safe alternatives.
+
+### What it demonstrates
+
+The program covers 5 common memory errors:
+
+1. **Buffer Overflow** - Writing beyond allocated memory boundaries
+2. **Use-After-Free** - Accessing memory after it has been freed
+3. **Dangling Pointer** - Dereferencing pointers to freed memory
+4. **Memory Leak** - Allocating memory without freeing it
+5. **Double Free** - Freeing the same pointer twice
+
+Each error type is shown with:
+- An unsafe example demonstrating the error
+- Explanation of why it's dangerous
+- A safe alternative showing the correct approach
+
+### Running the program
+
+```bash
+# Standard execution
+./mem_errors
+
+# With Valgrind to detect memory issues
+valgrind --leak-check=full ./mem_errors
+
+# With AddressSanitizer (requires compilation with -fsanitize=address)
+./mem_errors-sanitize
+```
+
+### Example output
+
+```
+╔═══════════════════════════════════════════════════════════════════╗
+║       Common Memory Errors in C - Educational Demonstration      ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+  1. BUFFER OVERFLOW
+═══════════════════════════════════════════════════════════════════
+
+  UNSAFE: strcpy() doesn't check buffer size
+  Buffer size: 8 bytes
+  Attempting to copy 20 characters...
+  Buffer content: AAAAAAAAAAAAAAAAAAAA
+  ⚠️  Memory corruption occurred! Stack may be smashed.
+
+  SAFE: Using strncpy() with size checking
+  Buffer size: 8 bytes
+  Source length: 20 bytes
+  Buffer content: AAAAAAA
+  ✓ Only copied 7 characters, properly null-terminated.
+```
+
+### Learning objectives
+
+By studying this program, you will learn to:
+
+- **Recognize unsafe patterns** - Identify common mistakes in C code
+- **Understand consequences** - See what happens when memory is mismanaged
+- **Apply safe practices** - Learn proper memory management techniques
+- **Use debugging tools** - Practice with AddressSanitizer and Valgrind
+- **Write secure code** - Avoid security vulnerabilities
+
+### Key safety rules demonstrated
+
+✓ Always check buffer sizes before copying
+✓ Set pointers to NULL after freeing
+✓ Check for NULL before dereferencing
+✓ Always free() allocated memory
+✓ Never free() the same pointer twice
+
+### Debugging tips
+
+```bash
+# Compile with AddressSanitizer to catch errors at runtime
+gcc -g -fsanitize=address -o mem_errors mem_errors.c
+
+# Use Valgrind for comprehensive memory analysis
+gcc -g -o mem_errors mem_errors.c
+valgrind --leak-check=full --show-leak-kinds=all ./mem_errors
+
+# Enable all compiler warnings
+gcc -Wall -Wextra -Wpedantic -o mem_errors mem_errors.c
+```
+
+### Warning
+
+⚠️ This program intentionally contains unsafe code for educational purposes. The `double_free_example()` is commented out by default as it will crash when compiled with sanitizers. Never use these unsafe patterns in production code!
 
 ---
 

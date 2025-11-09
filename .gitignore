@@ -1,6 +1,13 @@
+# Build directories
+bin/
+build/
+
 # Compiled binaries
 numstat
 memmap
+mem_errors
+*-debug
+*-sanitize
 *.exe
 *.out
 a.out
